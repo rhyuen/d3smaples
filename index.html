@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>D3 son</title>
+        <style>
+        svg{
+            width: 100%;
+            background: lavender;
+        }</style>
+    </head>
+    <body>
+        <svg>
+            <rect/>
+            <rect/>
+            <rect/>
+            <rect/>
+            <rect/>
+            <rect/>
+        </svg>
+
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.js"></script>
+        <script>
+            let data = [100, 175, 175, 175, 175, 175];
+            let rectWidth = 100;  // 
+            const height = 175;
+
+            d3.selectAll("rect")
+                .data(data)
+                .attr("x", (d, i) => i*rectWidth)
+                .attr("y", (d) => height - d)  //axes in d3 are king of odd.  hence why it's height subtracted by d
+                .attr("width", rectWidth)
+                .attr("height", d => d)
+                .attr("fill", "#343434")
+                .attr("stroke", "#fff");
+        </script>
+    </body>
+</html>

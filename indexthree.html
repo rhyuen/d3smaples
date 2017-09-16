@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>D3 Scales and Axes</title>
+        <style> 
+        html{
+            height: 100%;
+            background: blue;
+            margin: 0;
+            border: 0;
+        }       
+        body{            
+            height: 100%;
+            background: pink;
+            margin: 0;
+            border: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        svg{                        
+            width: 50%;
+            height: 50%;            
+            background: lavender;
+        }</style>
+    </head>
+    <body>
+        <svg></svg>
+
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.js"></script>
+        <script>
+            let data = [100, 175, 175, 300, 175, 175, 20, 30, 50, 99, 30, 20, 370, 3];
+            let rectWidth = 50;  // 
+            const height = 375;
+
+            let min = d3.min(data, d=>d[city]);
+            let max = d3.max(data, d=> d[city]);
+
+            //extent returns the min and max
+            let extent = d3.extent(data, d => d[city]);
+            console.log(extent);
+            let yScale = d3.scaleLinear().domain(extent).range([height, 0]);
+
+            let yAxis = d3.axisLeft().scale(yScale);
+            let axis = d3.select("svg")
+                .append('g')  //equiv of css-ing your svg using groups and transforms
+                .attr("transform", "translate(500, 330)")
+                .call(yAxis);
+            
+            let text = axis.selectAll("text")
+                        .attr("fill", (d) => d === 66 ? "red": "blue");
+
+            // d3.select("svg")
+            //     .selectAll("rect")
+            //     .data(data)
+            //     .enter()
+            //     .append("rect")
+            //     .attr("x", (d, i) => i*rectWidth)
+            //     .attr("y", (d) => height - d)  //axes in d3 are king of odd.  hence why it's height subtracted by d
+            //     .attr("width", rectWidth)
+            //     .attr("height", d => d)
+            //     .attr("fill", "#343434")
+            //     .attr("stroke", "#fff");
+        </script>
+    </body>
+</html>
