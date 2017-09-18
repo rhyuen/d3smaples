@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>D3 son</title>
+        <style> 
+        html{
+            height: 100%;
+            background: blue;
+            margin: 0;
+            border: 0;
+        }       
+        body{            
+            height: 100%;
+            background: pink;
+            margin: 0;
+            border: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        svg{                        
+            width: 50%;
+            height: 50%;            
+            background: lavender;
+        }</style>
+    </head>
+    <body>
+        <svg></svg>
+
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.js"></script>
+        <script>
+
+            //Other Colour Schemas
+            //d3.schemaCategory20
+            //d3.schemaCategory10
+            //d3.schemaCategory20c
+            let colors = d3.scaleOrdinal(d3.schemeCategory20b);
+            let data = [1, 17, 2, 3, 5, 8, 13, 21];
+            let pies = d3.pie()(data);
+            console.log(pies);
+
+            let arc = d3.arc()
+                .innerRadius(50) //for donut effect!
+                .outerRadius(150)
+                .startAngle(d => d.startAngle)
+                .endAngle(d => d.endAngle)
+            
+            let svg = d3.select("svg")
+                .append("g")
+                .attr("transform", "translate(200, 200)");
+            svg.selectAll("path")
+                .data(pies)
+                .enter()
+                .append("path")
+                .attr("d", d => arc(d))
+                .attr("fill", (d, i) => colors(d.value))
+                .attr("stroke-width", "3")
+                .attr("stroke", "black");
+
+
+                //data => start/end angles => arc => svg path
+            
+        </script>
+    </body>
+</html>

@@ -29,26 +29,26 @@
 
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.js"></script>
         <script>
-            let data = [100, 175, 175, 300, 175, 175, 20, 30, 50, 99, 30, 20, 370, 3];
-            let rectWidth = 50;  // 
-            const height = 375;
+            // let data = [100, 175, 175, 300, 175, 175, 20, 30, 50, 99, 30, 20, 370, 3];
+            // let rectWidth = 50;  // 
+            // const height = 375;
 
-            let min = d3.min(data, d=>d[city]);
-            let max = d3.max(data, d=> d[city]);
+            // let min = d3.min(data, d=>d[city]);
+            // let max = d3.max(data, d=> d[city]);
 
-            //extent returns the min and max
-            let extent = d3.extent(data, d => d[city]);
-            console.log(extent);
-            let yScale = d3.scaleLinear().domain(extent).range([height, 0]);
+            // //extent returns the min and max
+            // let extent = d3.extent(data, d => d[city]);
+            // console.log(extent);
+            // let yScale = d3.scaleLinear().domain(extent).range([height, 0]);
 
-            let yAxis = d3.axisLeft().scale(yScale);
-            let axis = d3.select("svg")
-                .append('g')  //equiv of css-ing your svg using groups and transforms
-                .attr("transform", "translate(500, 330)")
-                .call(yAxis);
+            // let yAxis = d3.axisLeft().scale(yScale);
+            // let axis = d3.select("svg")
+            //     .append('g')  //equiv of css-ing your svg using groups and transforms
+            //     .attr("transform", "translate(500, 330)")
+            //     .call(yAxis);
             
-            let text = axis.selectAll("text")
-                        .attr("fill", (d) => d === 66 ? "red": "blue");
+            // let text = axis.selectAll("text")
+            //             .attr("fill", (d) => d === 66 ? "red": "blue");
 
             // d3.select("svg")
             //     .selectAll("rect")
@@ -61,6 +61,67 @@
             //     .attr("height", d => d)
             //     .attr("fill", "#343434")
             //     .attr("stroke", "#fff");
+
+            let city = "San Francisco";
+            let width = 800;
+            let height = 300;
+            const margin = {top: 20, left: 20, right: 20, bottom: 20};
+
+            d3.tsv("data.tsv", (err, data) => {
+                
+                data.forEach((el) => {
+                    el.date = d3.timeParse("%Y%m%d")(el.date);
+                    el.date = new Date(el.date);
+                    el[city] = ++el[city];
+                });
+
+                let xExtent = d3.extent(data, d=> d.date);                
+                let xScale = d3.scaleTime()
+                    .domain(xExtent)
+                    .range([margin.left, width - margin.right]);                    
+                let yExtent = d3.extent(data, d=>d[city]);
+
+                // let yMax = d3.max(data, d => d[city]);
+                // let altYScale = d3.scaleLinear()
+                //     .domain([0, yMax])
+                //     .range([0, height - margin.top - margin.bottom]);
+
+                let yScale = d3.scaleLinear()
+                    .domain(yExtent)
+                    .range([height - margin.bottom, margin.top]);  
+                let heightScale = d3.scaleLinear()
+                    .domain(yExtent)                  
+                    .range([0, height - margin.top - margin.bottom]);
+
+
+                let svg = d3.select("svg");
+                let rect = svg.selectAll("rect")
+                    .data(data)
+                    .enter().append("rect")
+                    .attr("width", 2)
+                    .attr("height", (d) => heightScale(d[city]))
+                    .attr("x", (d) => xScale(d.date))
+                    .attr("y", (d) => yScale(d[city]))
+                    .attr("fill", "blue")
+                    .attr("stroke", "white");
+
+                let xAxis = d3.axisBottom()                    
+                    .scale(xScale)
+                    .tickFormat(d => d3.timeFormat("%b %Y")(d));
+                let yAxis = d3.axisLeft()
+                    .scale(yScale);
+                
+                svg.append("g")
+                    .attr("transform", "translate(" + [0, height - margin.bottom] + ")")
+                    .call(xAxis);
+
+                svg.append("g")
+                    .attr("transform", "translate(" + [margin.left, 0] + ")")
+                    .call(yAxis);
+            });
+
+            
+
         </script>
     </body>
 </html>

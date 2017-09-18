@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>D3 son</title>
+        <style> 
+        html{
+            height: 100%;
+            background: blue;
+            margin: 0;
+            border: 0;
+        }       
+        body{            
+            height: 100%;
+            background: pink;
+            margin: 0;
+            border: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        svg{                        
+            width: 50%;
+            height: 50%;            
+            background: lavender;            
+        }        
+        g{
+            color: black;
+        }
+        </style>
+    </head>
+    <body>
+        <svg>            
+        </svg>
+
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.js"></script>
+        <script>
+            // let data = [
+            //     {date: new Date(2007, 3, 24), value: 9},
+            //     {date: new Date(2007, 3, 25), value: 1},
+            //     {date: new Date(2007, 3, 26), value: 9},
+            //     {date: new Date(2007, 3, 27), value: 3},
+            //     {date: new Date(2007, 3, 28), value: 20},
+            //     {date: new Date(2007, 3, 29), value: 9},
+            //     {date: new Date(2007, 3, 30), value: 9},
+            //     {date: new Date(2007, 4, 1), value: 9},
+            //     {date: new Date(2007, 4, 4), value: 3}
+            // ];
+
+
+            let city = "New York";
+            let width = 900;
+            let height = 300;
+            let margin = {top: 20, right: 20, left: 20, bottom: 20};
+
+
+            d3.tsv("data.tsv", (err, data) => {
+                data.forEach(el => {
+                    el.date = d3.timeParse("%Y%m%d")(el.date);
+                    el.date = new Date(el.date);
+                    el[city] = ++el[city];
+                });
+
+
+                let xExtent = d3.extent(data, d => d.date);
+                let xScale = d3.scaleTime()
+                    .domain(xExtent)
+                    .range([margin.left, width - margin.right]);
+                let yExtent = d3.extent(data, d=> d[city]);
+                let yScale = d3.scaleLinear()
+                    .domain(yExtent)
+                    .range([0, height - margin.top - margin.bottom]);
+
+                let line = d3.line()
+                    .x(d => xScale(d.date))
+                    .y(d => yScale(d[city]))
+                    .curve(d3.curveStep);
+
+                let svg = d3.select("svg")
+                    .data(data)
+                    .append("path")
+                    .attr("d", line(data))
+                    .attr("fill", "none")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 1);
+
+
+                    //scales don't appear.  don't know why.
+                // let xAxis = d3.axisBottom()
+                //     .scale(xScale)
+                //     .tickFormat(d =>d3.timeFormat("%b %Y")(d));
+                // let yAxis = d3.axisLeft()
+                //     .scale(yScale);
+                
+                //     //axes don't appear.
+                // svg.append("g")
+                //     .attr("transform", "translate(" + [0, height - margin.bottom] + ")")
+                //     .call(xAxis);
+                
+                // svg.append("g")
+                //     .attr("transform", "translate(" + [margin.left, 0] + ")")
+                //     .call(yAxis);                    
+            });                        
+        </script>
+    </body>
+</html>

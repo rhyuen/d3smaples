@@ -1,0 +1,11 @@
+{
+  "name": "d3thing",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "gulp"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.13",
+    "gulp": "^3.9.1"
+  }
+}
